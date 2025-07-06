@@ -33,7 +33,7 @@ def word_into_pattern(guess, solution):
             greens[i] = guess[i]
             if debug: print(f"DEBUG: Green check, {guess} against {solution}, index {i} is {guess[i]} and {solution[i]}, found green.")
    
-    # Grey: Set guessed letters that do not exist in solution
+    # Grey: Set guessed letters that do not exist in sol]ution
     for i in iterations:
         if guess[i] not in solution:
             greys[i] = guess[i]
@@ -45,9 +45,18 @@ def word_into_pattern(guess, solution):
             greys[i] = guess[i]
             if debug: print(f"DEBUG: Grey check, {guess[i]} does exist 1 time in {solution}, but has already been marked green ({greens}).")
 
+    # Yellow: Check for letters that occur only once in solution but multiple times in guess and have already been marked green. Set the first one as yellow, then rest of the multiples to grey. 
+    for i in iterations:
+        if guess.count(guess[i]) > 1 and solution.count(guess[i]) == 1 and guess[i] not in yellows:
+            yellows[i] = guess[i]
+            if debug: print(f"DEBUG: Yellow check, {guess[i]} does exist multiple times in {guess} but only once in {solution}, this first occurence of {guess[i]} will be yellow, and then all others will be grey.")
+        elif guess.count(guess[i]) > 1 and solution.count(guess[i]) == 1 and guess[i] in yellows:
+            greys[i] = guess[i]
+            if debug: print(f"DEBUG: Yellow check, {guess[i]} does exist multiple times in {guess} but only once in {solution}, this is not the first occurence of {guess[i]}, so it is grey.")
+
     # Yellow: Assume that blank letters at this point are yellows
     for i in iterations:
-        if greens[i] == "" and greys[i] == "":
+        if greens[i] == "" and yellows[i] == "" and greys[i] == "":
             yellows[i] = guess[i]
             if debug: print(f"DEBUG: Yellow default, no other logic triggered. {guess[i]} added to {yellows}.")
     
